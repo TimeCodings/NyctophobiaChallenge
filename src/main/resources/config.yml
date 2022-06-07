@@ -1,0 +1,121 @@
+##########################################################################################################################
+#  ███╗░░██╗██╗░░░██╗░█████╗░████████╗░█████╗░░█████╗░██╗░░██╗░█████╗░██╗░░░░░██╗░░░░░███████╗███╗░░██╗░██████╗░███████╗ #
+#  ████╗░██║╚██╗░██╔╝██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██║░░██║██╔══██╗██║░░░░░██║░░░░░██╔════╝████╗░██║██╔════╝░██╔════╝ #
+#  ██╔██╗██║░╚████╔╝░██║░░╚═╝░░░██║░░░██║░░██║██║░░╚═╝███████║███████║██║░░░░░██║░░░░░█████╗░░██╔██╗██║██║░░██╗░█████╗░░ #
+#  ██║╚████║░░╚██╔╝░░██║░░██╗░░░██║░░░██║░░██║██║░░██╗██╔══██║██╔══██║██║░░░░░██║░░░░░██╔══╝░░██║╚████║██║░░╚██╗██╔══╝░░ #
+#  ██║░╚███║░░░██║░░░╚█████╔╝░░░██║░░░╚█████╔╝╚█████╔╝██║░░██║██║░░██║███████╗███████╗███████╗██║░╚███║╚██████╔╝███████╗ #
+#  ╚═╝░░╚══╝░░░╚═╝░░░░╚════╝░░░░╚═╝░░░░╚════╝░░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚══════╝╚══════╝╚══════╝╚═╝░░╚══╝░╚═════╝░╚══════╝ #
+##########################################################################################################################
+
+#Change this to "false" if you want to disable this addon (for Nyctophobia)
+#IMPORTANT: THIS ADDON WILL DISABLE ALL EVENTS/FEATURES OF THE OFFICIAL NYCTOPHOBIA PLUGIN WHILE IT IS ENABLED
+Enabled: true
+
+#Multiplayer System
+Multiplayer:
+  #Change this to "true" if you want to play with more than you alone
+  Enabled: false
+  #Set the minimum number of players
+  MinPlayers: 2
+  #Set the maximum number of players
+  MaxPlayers: 5
+  #Change this to "true" if you want, that all players die when one dies
+  EndWhenOneDies: false
+  #Change this to "true" if you want, that only one player can win the challenge (for example killing the enderdragon)
+  DuelMode: false
+  #Give player compass on death (ONLY WORKING IF ENDWHENONEDIES IS DISABLED)
+  GiveCompassOnDeath: true
+
+#Enable some actions which will get triggered if the challenge starts
+#If you want more EventTriggers like this, use the API or ask me on my discord: https://discord.gg/8QWmU4ebCC
+OnStart:
+  #Change this to "false" if you want, that the inventory won't get cleared
+  ClearInventory: true
+  #Change the gamemode (SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR)
+  GameMode: "SURVIVAL"
+  #Message (every player on this server will see this message)
+  Message: "&e&lNyctoChallange &a&lstarted!"
+
+#Enable some actions which will get triggered if a player dies OR IF HE ENTERED THE DARKNESS (because of the challange)
+OnDeath:
+  #Change this to "false" if you want, that the inventory won't get cleared
+  ClearInventory: true
+  #Change the gamemode (SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR)
+  GameMode: "SPECTATOR"
+  #Message (only the player who died will see this message)
+  #Placeholders: %player% (for the playername), %time% (for the time where the player died)
+  PrivateMessage: "&cYou've died!"
+  #Message (every player on this server will see this message)
+  #Placeholders: %player% (for the playername), %time% (for the time where the player died)
+  PublicMessage: "&c&lRIP! &c%player% died! (at %time%)"
+  #Message (this message will be sended if the challenge ends after this death)
+  #Placeholders: %player% (for the playername), %time% (for the time where the player died)
+  MessageIfEnd: "&c&lChallange failed because &f&l%player% &c&ldied! Wasted time: %time%"
+
+#Enable some actions which will get triggered if the challenge ends
+OnEnd:
+  #Change this to "false" if you want, that the inventory won't get cleared
+  ClearInventory: true
+  #Change the gamemode (SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR)
+  GameMode: "CREATIVE"
+  #Message (every player on this server will see this message)
+  #Placeholders: %player% (for the playername who defeated the boss), %time% (for the time where the player died)
+  Message: "&e&lNyctoChallange &c&lstopped! \n &aBoss defeated in &e&l%time% &a(defeated by %player%)"
+
+#Settings for the timer in the ActionBar
+ActionBarTimer:
+  #Change this to "false" if you want to disable the ActionBarTimer
+  Enabled: true
+  #Change the format of the Actionbar
+  #Placeholders: %hours% (for the played hours), %minutes% (for the played minutes), %seconds% (for the played seconds),
+  # %lighting% (it will display the lighting which shines on the player), %maxblocklighting% (the lighting which should not get reached (read from the config of the Nyctophobia plugin))
+  Format:
+    #Format if Challenge is started (/nycchallenge start or if StartOnJoin is enabled and all players got found)
+    Started: "&a&l%hours%:%minutes%:%seconds% &f&l| &a&l%lightning% > &c&l%maxblocklighting%"
+    #Format if Challenge is paused (/nycchallenge pause)
+    Paused: "&e&l%hours%:%minutes%:%seconds%"
+    #Format if Challenge is stopped (/nycchallenge stop or if noone survived)
+    Stopped: "&4&l%hours%:%minutes%:%seconds%"
+
+#Choose the monster that needs to be killed to complete the challenge
+#All types are listed here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+GoalType: "ENDER_DRAGON"
+
+#Change the messages or permissions of the commands
+Command:
+  #Command: /nycchallenge toggle
+  Toggle:
+    Permission: "nyc.challenge.toggle"
+    MessageEnabled: "&aThe Nyctophobia Challenge addon has been activated!"
+    MessageDisabled: "&cThe Nyctophobia Challenge addon has been disabled!"
+  #Command: /nycchallenge start
+  Start:
+    Permission: "nyc.challenge.start"
+    Message: "&a&lThe Nyctophobia Challenge has been started!"
+  #Command: /nycchallenge pause
+  Pause:
+    Permission: "nyc.challenge.pause"
+    Message: "&e&lThe Nyctophobia Challenge has been paused!"
+  #Command: /nycchallenge stop
+  Stop:
+    Permission: "nyc.challenge.stop"
+    Message: "&c&lThe Nyctophobia Challenge has been stopped!"
+  #Command: /nycchallenge reload
+  Reload:
+    Permission: "nyc.challenge.reload"
+    Message: "&cThe Challenge Config was successfully reloaded!"
+  #Command: /nycchallenge help (or if you're using the wrong syntax)
+  Help:
+    Permission: "nyc.challenge.help"
+    Message: "&cCommands: &e/nycc start, /nycc pause, /nycc stop, /nycc reload, /nycc help"
+
+#Change this to "false" if you don't want the challenge to start automatically when entering the server
+#(if multiplayer is enabled the game will start after the minimum players are connected)
+StartOnJoin: true
+
+#Change this to "false" if you want to disable the AutoUpdater
+AutoUpdater: true
+
+#DO NOT CHANGE THIS!!!
+#If you change this the config will reset itself!
+config-version: 1.0

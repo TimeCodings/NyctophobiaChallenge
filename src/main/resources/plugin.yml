@@ -1,0 +1,15 @@
+name: NyctoChallenge
+version: 1.0.0
+main: dev.timecoding.nyctophobia.challenge.NyctophobiaChallenge
+api-version: 1.18
+depend: [ Nyctophobia ]
+authors: [ TimeCoding ]
+description: This is the official Challangeaddon for the Nyctophobia plugin!
+website: timecoding.de
+
+commands:
+  nycchallenge:
+    description: The Command for managing and starting the Nyctophobia Challenge!
+    aliases:
+      - nycc
+      - nyctophobiachallenge
