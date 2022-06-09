@@ -15,7 +15,7 @@ public class ConfigManager {
 
     public ConfigManager(NyctophobiaChallenge plugin, String filename) {
         this.plugin = plugin;
-        this.file = new File("plugins//Nyctophobia", filename + ".yml");
+        this.file = new File("plugins//NyctoChallenge", filename + ".yml");
         this.cfg = YamlConfiguration.loadConfiguration(this.file);
     }
 

@@ -12,6 +12,7 @@
 Enabled: true
 
 #Multiplayer System
+#THIS OPTION IS IMPORTANT IF YOU WANT TO PLAY FOR EXAMPLE WITH YOUR FRIENDS
 Multiplayer:
   #Change this to "true" if you want to play with more than you alone
   Enabled: false
@@ -25,6 +26,10 @@ Multiplayer:
   DuelMode: false
   #Give player compass on death (ONLY WORKING IF ENDWHENONEDIES IS DISABLED)
   GiveCompassOnDeath: true
+  #This message will be sended if the maxplayers are reached
+  MaxMessage: "&cYou got kicked because the MaxPlayers are reached!"
+  #This message will be sended if you disabled the multiplayer and someone wants to connect to the server)
+  KickMessage: "&cThis server does not support the multiplayer function! If you want to activate them, activate the Multiplayer function in the NyctoChallenge Config!"
 
 #Enable some actions which will get triggered if the challenge starts
 #If you want more EventTriggers like this, use the API or ask me on my discord: https://discord.gg/8QWmU4ebCC
@@ -62,26 +67,38 @@ OnEnd:
   #Placeholders: %player% (for the playername who defeated the boss), %time% (for the time where the player died)
   Message: "&e&lNyctoChallange &c&lstopped! \n &aBoss defeated in &e&l%time% &a(defeated by %player%)"
 
+#Enable some actions which will get triggered if the challenge will get paused (/nycchallenge pause)
+OnPause:
+  #Change the gamemode (SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR)
+  GameMode: "CREATIVE"
+  #Message (every player on this server will see this message)
+  #Placeholders: %player% (for the playername who paused the challenge), %time% (for the time)
+  Message: "&e&lNyctoChallange &e&lpaused! \n &eTime spendet: &e&l%time% (paused by %player%)"
+
 #Settings for the timer in the ActionBar
 ActionBarTimer:
   #Change this to "false" if you want to disable the ActionBarTimer
   Enabled: true
   #Change the format of the Actionbar
   #Placeholders: %hours% (for the played hours), %minutes% (for the played minutes), %seconds% (for the played seconds),
-  # %lighting% (it will display the lighting which shines on the player), %maxblocklighting% (the lighting which should not get reached (read from the config of the Nyctophobia plugin))
+  # %lighting% (it will display the lighting which shines on the player), %maxlighting% (the lighting which should not get reached (read from the config of the Nyctophobia plugin))
   Format:
     #Format if Challenge is started (/nycchallenge start or if StartOnJoin is enabled and all players got found)
-    Started: "&a&l%hours%:%minutes%:%seconds% &f&l| &a&l%lightning% > &c&l%maxblocklighting%"
+    Started: "&a&l%hours%:%minutes%:%seconds% &f&l| &a&l%lighting% > &c&l%maxlighting%"
     #Format if Challenge is paused (/nycchallenge pause)
     Paused: "&e&l%hours%:%minutes%:%seconds%"
     #Format if Challenge is stopped (/nycchallenge stop or if noone survived)
     Stopped: "&4&l%hours%:%minutes%:%seconds%"
+    #Format if the Server is waiting for players (only working if multiplayer and startonjoin is enabled)
+    #Placeholders: %players% (players on the server), %minplayers% (the minimum of players who can join), %maxplayers% (the maximum of players who can join)
+    Waiting: "&cWaiting for players: %players%/%minplayers%"
 
 #Choose the monster that needs to be killed to complete the challenge
 #All types are listed here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 GoalType: "ENDER_DRAGON"
 
 #Change the messages or permissions of the commands
+#THIS MESSAGES WILL ONLY BE DISPLAYED TO THE PLAYER WHO EXECUTED THE COMMAND
 Command:
   #Command: /nycchallenge toggle
   Toggle:
@@ -104,14 +121,34 @@ Command:
   Reload:
     Permission: "nyc.challenge.reload"
     Message: "&cThe Challenge Config was successfully reloaded!"
+  #Command: /nycchallenge restore
+  Restore:
+    Permission: "nyc.challenge.restore"
+    #Placeholders: %time% (for the restored time)
+    Message: "&aThe Timer was successfully restored! &e(%time%)"
+  #Command: /nycchallenge save (to save the timer)
+  Save:
+    Permission: "nyc.challenge.save"
+    #Placeholders: %time% (for the saved time)
+    Message: "&aThe Timer was successfully saved! &e(%time%)"
   #Command: /nycchallenge help (or if you're using the wrong syntax)
   Help:
     Permission: "nyc.challenge.help"
-    Message: "&cCommands: &e/nycc start, /nycc pause, /nycc stop, /nycc reload, /nycc help"
+    Message: "&cCommands: &e/nycc start, /nycc pause, /nycc stop, /nycc restore, /nycc reload, /nycc help"
 
 #Change this to "false" if you don't want the challenge to start automatically when entering the server
 #(if multiplayer is enabled the game will start after the minimum players are connected)
 StartOnJoin: true
+
+#Restart server after failed challenge
+Restart:
+  #(RECOMMENDED TO SET THIS TO "TRUE")
+  Enabled: true
+  #Delay in Seconds how many seconds it should take to restart
+  Delay: 20
+
+#Save timer after reload/restart (also working with /nycchallenge save) (if you change this to "false" /nycchallenge restore won't work anymore)
+SaveTimer: true
 
 #Change this to "false" if you want to disable the AutoUpdater
 AutoUpdater: true

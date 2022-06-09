@@ -25,11 +25,11 @@ public class AutoUpdater {
     //CHANGE THIS EVERY VERSION EVERY CONFIGUPDATE
     private String newconfigversion = "1.0";
 
-
     public AutoUpdater(NyctophobiaChallenge plugin){
         this.plugin = plugin;
         this.pluginversion = plugin.getDescription().getVersion();
-        this.configversion = this.plugin.getPluginConfig().getString("config-version");
+        this.configversion = plugin.getPluginConfig().getString("config-version");
+        System.out.println(configversion);
         this.autoupdaterenabled = this.plugin.getPluginConfig().getBoolean("AutoUpdater");
     }
 
