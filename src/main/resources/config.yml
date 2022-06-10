@@ -22,17 +22,13 @@ Multiplayer:
   MaxPlayers: 5
   #Change this to "true" if you want, that all players die when one dies
   EndWhenOneDies: false
-  #Change this to "true" if you want, that only one player can win the challenge (for example killing the enderdragon)
-  DuelMode: false
-  #Give player compass on death (ONLY WORKING IF ENDWHENONEDIES IS DISABLED)
-  GiveCompassOnDeath: true
   #This message will be sended if the maxplayers are reached
   MaxMessage: "&cYou got kicked because the MaxPlayers are reached!"
   #This message will be sended if you disabled the multiplayer and someone wants to connect to the server)
   KickMessage: "&cThis server does not support the multiplayer function! If you want to activate them, activate the Multiplayer function in the NyctoChallenge Config!"
 
 #Enable some actions which will get triggered if the challenge starts
-#If you want more EventTriggers like this, use the API or ask me on my discord: https://discord.gg/8QWmU4ebCC
+#If you want more EventTriggers like this, ask me on my discord: https://discord.gg/8QWmU4ebCC
 OnStart:
   #Change this to "false" if you want, that the inventory won't get cleared
   ClearInventory: true
@@ -54,8 +50,12 @@ OnDeath:
   #Placeholders: %player% (for the playername), %time% (for the time where the player died)
   PublicMessage: "&c&lRIP! &c%player% died! (at %time%)"
   #Message (this message will be sended if the challenge ends after this death)
-  #Placeholders: %player% (for the playername), %time% (for the time where the player died)
-  MessageIfEnd: "&c&lChallange failed because &f&l%player% &c&ldied! Wasted time: %time%"
+  #Placeholders: %player% (for the playername), %time% (for the time where the player died), %reason% for the reason
+  MessageIfEnd: "&c&lChallange failed because of &f&l%player%&c&l! Wasted time: %time% | Reason: &f&l%reason%"
+  #Reason if you entered the darkness and died
+  DarknessReason: "Entered the darkness"
+  #Reason if you stopped the challenge with a command
+  StoppedReason: "Stopped with command"
 
 #Enable some actions which will get triggered if the challenge ends
 OnEnd:
@@ -109,14 +109,17 @@ Command:
   Start:
     Permission: "nyc.challenge.start"
     Message: "&a&lThe Nyctophobia Challenge has been started!"
+    AlreadyMessage: "&cThe Challenge has already started!"
   #Command: /nycchallenge pause
   Pause:
     Permission: "nyc.challenge.pause"
     Message: "&e&lThe Nyctophobia Challenge has been paused!"
+    AlreadyMessage: "&cThe Challenge has already paused!"
   #Command: /nycchallenge stop
   Stop:
     Permission: "nyc.challenge.stop"
     Message: "&c&lThe Nyctophobia Challenge has been stopped!"
+    AlreadyMessage: "&cThe Challenge has already stopped!"
   #Command: /nycchallenge reload
   Reload:
     Permission: "nyc.challenge.reload"
@@ -126,6 +129,7 @@ Command:
     Permission: "nyc.challenge.restore"
     #Placeholders: %time% (for the restored time)
     Message: "&aThe Timer was successfully restored! &e(%time%)"
+    NotExists: "&cThe Timer could not be found!"
   #Command: /nycchallenge save (to save the timer)
   Save:
     Permission: "nyc.challenge.save"
@@ -134,13 +138,23 @@ Command:
   #Command: /nycchallenge help (or if you're using the wrong syntax)
   Help:
     Permission: "nyc.challenge.help"
-    Message: "&cCommands: &e/nycc start, /nycc pause, /nycc stop, /nycc restore, /nycc reload, /nycc help"
+    Message: "&cCommands: &e/nycc start, /nycc pause, /nycc stop, /nycc restore, /nycc save, /nycc toggle, /nycc reload /nycc help"
+    #If you for example use the command /nycchallenge thisworddoesnotexist
+  WrongSyntax:
+    #No Permission! The Permission to get this message is the Help Permission!
+    Message: "&c/nycc help"
+  #If you do not have the permission
+  NoPermission:
+    Message: "&cYou do not have the permission to do this!"
+  #The permission to use all of these commands
+  OPPerm:
+    Permission: "nyc.challenge.*"
 
 #Change this to "false" if you don't want the challenge to start automatically when entering the server
 #(if multiplayer is enabled the game will start after the minimum players are connected)
 StartOnJoin: true
 
-#Restart server after failed challenge
+#Restart server after failed/completed challenge
 Restart:
   #(RECOMMENDED TO SET THIS TO "TRUE")
   Enabled: true

@@ -2,8 +2,10 @@ package dev.timecoding.nyctophobia.challenge.listener;
 
 import dev.timecoding.nyctophobia.challenge.NyctophobiaChallenge;
 import dev.timecoding.nyctophobia.challenge.api.ChallengeState;
+import dev.timecoding.nyctophobia.challenge.api.ChallengeTimer;
 import dev.timecoding.nyctophobia.challenge.config.ConfigManager;
 import dev.timecoding.nyctophobia.event.DarknessEnterEvent;
+import dev.timecoding.nyctophobia.event.DarknessLeaveEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,7 +26,49 @@ public class ChallangeListener implements Listener {
 
     @EventHandler
     public void onDarknessEnter(DarknessEnterEvent e){
+        Player p = e.getPlayer();
+        ChallengeState state = NyctophobiaChallenge.plugin.getState();
+        boolean enabled = cfg.getBoolean("Enabled");
+        if(enabled){
+            e.setCancelled(true);
+        }
+        if(state.equals(ChallengeState.STARTED) && enabled) {
+            NyctophobiaChallenge.plugin.setState(ChallengeState.STOPPED);
+            ChallengeTimer timer = NyctophobiaChallenge.plugin.timer;
+            boolean clearInv = cfg.getBoolean("OnDeath.ClearInventory");
+            String msgifend = cfg.getString("OnDeath.MessageIfEnd").replace("%player%", p.getName()).replace("%time%", timer.getFullFormat()).replace("%reason%", cfg.getString("OnDeath.DarknessReason"));
+            String prmessage = cfg.getString("OnDeath.PrivateMessage").replace("%player%", p.getName()).replace("%time%", timer.getFullFormat());
+            String gamemode = cfg.getString("OnDeath.GameMode");
+            p.sendMessage(prmessage);
+            for (Player all : Bukkit.getOnlinePlayers()) {
+                all.sendMessage(msgifend);
+                if (clearInv) {
+                    all.getInventory().clear();
+                }
+                switch (gamemode) {
+                    case "SURVIVAL":
+                        all.setGameMode(GameMode.SURVIVAL);
+                        break;
+                    case "ADVENTURE":
+                        all.setGameMode(GameMode.ADVENTURE);
+                        break;
+                    case "CREATIVE":
+                        all.setGameMode(GameMode.CREATIVE);
+                        break;
+                    case "SPECTATOR":
+                        all.setGameMode(GameMode.SPECTATOR);
+                        break;
+                }
+            }
+        }
+    }
 
+    @EventHandler
+    public void onDarknessLeave(DarknessLeaveEvent e){
+        boolean enabled = cfg.getBoolean("Enabled");
+        if(enabled) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -75,6 +119,8 @@ public class ChallangeListener implements Listener {
                                 break;
                         }
                     }
+                }else{
+                    NyctophobiaChallenge.plugin.setState(ChallengeState.WAITING);
                 }
             }else if(startOnJoin){
                 if(!NyctophobiaChallenge.plugin.TimerSchedulerRunning()){
@@ -144,6 +190,7 @@ public class ChallangeListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e){
         Player p = e.getEntity().getPlayer();
+        ChallengeTimer timer = NyctophobiaChallenge.plugin.timer;
         boolean enabled = cfg.getBoolean("Enabled");
         boolean multiplayer = cfg.getBoolean("Multiplayer.Enabled");
         int minplayers = cfg.getInt("Multiplayer.MinPlayers");
@@ -153,11 +200,12 @@ public class ChallangeListener implements Listener {
         boolean givecompass = cfg.getBoolean("Multiplayer.GiveCompassOnDeath");
         boolean startOnJoin = cfg.getBoolean("StartOnJoin");
         boolean clearInv = cfg.getBoolean("OnDeath.ClearInventory");
-        String msgifend = cfg.getString("OnDeath.MessageIfEnd");
-        String pmessage = cfg.getString("OnDeath.PublicMessage");
-        String prmessage = cfg.getString("OnDeath.PrivateMessage");
+        String msgifend = cfg.getString("OnDeath.MessageIfEnd").replace("%player%", p.getName()).replace("%time%", timer.getFullFormat()).replace("%reason%",e.getDeathMessage());
+        String pmessage = cfg.getString("OnDeath.PublicMessage").replace("%player%", p.getName()).replace("%time%", timer.getFullFormat());
+        String prmessage = cfg.getString("OnDeath.PrivateMessage").replace("%player%", p.getName()).replace("%time%", timer.getFullFormat());
         String gamemode = cfg.getString("OnDeath.GameMode");
         if(enabled && canPlay()){
+            e.setDeathMessage("");
             p.sendMessage(prmessage);
             sendPublicMessage(pmessage);
             if(multiplayer){
@@ -183,6 +231,7 @@ public class ChallangeListener implements Listener {
                         }
                     }
                     NyctophobiaChallenge.plugin.setState(ChallengeState.STOPPED);
+                    NyctophobiaChallenge.plugin.tryToRestart();
                 }else{
                     p.sendMessage(msgifend);
                     if(clearInv){
@@ -223,26 +272,24 @@ public class ChallangeListener implements Listener {
                         break;
                 }
                 NyctophobiaChallenge.plugin.setState(ChallengeState.STOPPED);
+                NyctophobiaChallenge.plugin.tryToRestart();
             }
         }
     }
 
     @EventHandler
     public void onEntityKill(EntityDeathEvent e){
+        ChallengeTimer timer = NyctophobiaChallenge.plugin.timer;
         boolean enabled = cfg.getBoolean("Enabled");
-        boolean duelmode = cfg.getBoolean("Multiplayer.DuelMode");
         boolean clearInv = cfg.getBoolean("OnEnd.ClearInventory");
         String goaltype = cfg.getString("GoalType");
-        String endmsg = cfg.getString("OnEnd.Message");
         String gamemode = cfg.getString("OnEnd.GameMode");
         if(enabled && canPlay()) {
             if (e.getEntity().getKiller() != null && EntityType.valueOf(goaltype) != null) {
+                String endmsg = cfg.getString("OnEnd.Message").replace("%player%", e.getEntity().getKiller().getName()).replace("%time%", timer.getFullFormat());
                 EntityType type = EntityType.valueOf(goaltype);
                 Player killer = e.getEntity().getKiller();
                 if(e.getEntity().getType().equals(type)){
-                    if(duelmode){
-
-                    }else {
                         for(Player all : Bukkit.getOnlinePlayers()){
                             all.sendMessage(endmsg);
                             if(clearInv){
@@ -263,8 +310,8 @@ public class ChallangeListener implements Listener {
                                     break;
                             }
                         }
-                    }
                     NyctophobiaChallenge.plugin.setState(ChallengeState.STOPPED);
+                    NyctophobiaChallenge.plugin.tryToRestart();
                 }
             }
         }

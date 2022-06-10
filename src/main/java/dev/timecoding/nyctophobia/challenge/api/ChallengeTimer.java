@@ -51,4 +51,8 @@ public class ChallengeTimer {
         return seconds.toString();
     }
 
+    public String getFullFormat(){
+        return getHours()+":"+getMinutes()+":"+getSeconds();
+    }
+
 }

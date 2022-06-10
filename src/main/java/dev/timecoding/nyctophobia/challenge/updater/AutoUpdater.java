@@ -177,7 +177,7 @@ public class AutoUpdater {
                         //Replacing old settings with new
                         Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Config got updated!");
                     }
-                }, 10);
+                }, 20);
             }else{
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "No Config found! Creating a new one...");
                 //Create new Config

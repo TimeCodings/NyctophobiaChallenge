@@ -21,6 +21,8 @@ public class ConfigManager {
 
     public void init() {
         copyDefaults(true);
+        reloadConfig();
+        save();
     }
 
     public void reloadConfig(){
